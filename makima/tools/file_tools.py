@@ -1,4 +1,4 @@
-from config import PROJECT_ROOT
+from makima.config import PROJECT_ROOT
 import os
 import git
 

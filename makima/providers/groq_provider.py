@@ -1,6 +1,6 @@
 from groq import Groq
-from providers.base import LLMProvider
-from config import GROQ_API_KEY, MODEL_NAME
+from makima.providers.base import LLMProvider
+from makima.config import GROQ_API_KEY, MODEL_NAME
 
 class GroqProvider(LLMProvider):
 

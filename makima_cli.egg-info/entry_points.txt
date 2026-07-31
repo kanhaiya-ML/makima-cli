@@ -1,0 +1,2 @@
+[console_scripts]
+makima = makima.main:main

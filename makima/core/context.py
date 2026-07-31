@@ -1,5 +1,5 @@
-from config import PROJECT_ROOT,TOKEN_LIMIT
-from tools.file_tools import read_file,list_files
+from makima.config import PROJECT_ROOT,TOKEN_LIMIT
+from makima.tools.file_tools import read_file,list_files
 import os
 
 

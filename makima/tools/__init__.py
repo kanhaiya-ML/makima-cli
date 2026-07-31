@@ -1,5 +1,5 @@
-from tools.file_tools import read_file, list_files, edit_file, create_file
-from tools.shell_tools import run_command
+from makima.tools.file_tools import read_file, list_files, edit_file, create_file
+from makima.tools.shell_tools import run_command
 
 TOOL_REGISTRY = {
     "read_file": read_file,

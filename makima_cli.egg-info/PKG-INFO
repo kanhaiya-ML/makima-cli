@@ -1,0 +1,55 @@
+Metadata-Version: 2.4
+Name: makima-cli
+Version: 0.2.0
+Summary: AI coding assistant for your terminal
+Author: Kanhaiya
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: groq
+Requires-Dist: python-dotenv
+Requires-Dist: gitpython
+Requires-Dist: rich
+Requires-Dist: pyfiglet
+
+# Makima CLI 🤖
+
+An AI-powered coding assistant that runs in your terminal. Point it at any codebase and ask questions, make edits, and run commands — all from a clean CLI interface.
+
+## Features
+
+- Understands your entire codebase
+- Answers questions about your code
+- Edits files with auto git backup before changes
+- Creates new files
+- Runs terminal commands with confirmation
+- Works on any project
+- Clean terminal UI with syntax highlighting
+
+## Install
+
+git clone https://github.com/yourusername/makima-cli.git
+cd makima-cli
+pip install -r requirements.txt
+
+## Setup
+
+Create a .env file in the project root:
+GROQ_API_KEY=your_key_here
+
+Get a free API key at https://console.groq.com
+
+## Usage
+
+Point it at any project:
+python main.py /path/to/your/project
+
+Or run from inside a project folder:
+cd your-project
+python /path/to/makima-cli/main.py
+
+## Built With
+
+- Python
+- Groq API
+- Rich
+- GitPython

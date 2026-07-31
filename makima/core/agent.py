@@ -1,10 +1,10 @@
 import json
-from config import PROJECT_ROOT,MODEL_NAME
-from core.context import ContextManager
-from core.memory import Memory
-from tools import TOOL_REGISTRY
-from tools.registry import TOOL_SCHEMAS
-from providers.groq_provider import GroqProvider
+from makima.config import PROJECT_ROOT,MODEL_NAME
+from makima.core.context import ContextManager
+from makima.core.memory import Memory
+from makima.tools import TOOL_REGISTRY
+from makima.tools.registry import TOOL_SCHEMAS
+from makima.providers.groq_provider import GroqProvider
 from rich.console import Console
 
 
