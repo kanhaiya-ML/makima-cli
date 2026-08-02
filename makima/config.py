@@ -17,4 +17,4 @@ if not GROQ_API_KEY:
     print('  Windows: setx GROQ_API_KEY "your-key-here"')
     print('  Linux/Mac: export GROQ_API_KEY="your-key-here"')
     print("Get a free key at: https://console.groq.com")
-    sys.exit(1)
+    sys.exit(1) 

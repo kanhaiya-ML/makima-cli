@@ -1,6 +1,7 @@
 from pathlib import Path
 from groq import Groq
 import json
+import questionary
 from rich.console import Console
 console = Console()
 
@@ -26,8 +27,9 @@ def setup_api_key():
     if config_file.exists():
         with open(config_file, "r") as f:
             data = json.load(f)
-            key = data["groq_api_key"]
-            return key
+            key = data.get("groq_api_key")
+            if key:
+                return key
 
     import os
     env_key = os.getenv("GROQ_API_KEY")
@@ -51,3 +53,48 @@ def setup_api_key():
             return key
         else:
             console.print("[bold red]✗ Invalid key. Try again.[/]")
+
+
+
+def setup_model():
+    config_dir = Path.home() / ".makima"
+    config_file = config_dir / "config.json" 
+
+    if config_file.exists():
+        with open(config_file,"r") as f:
+            data = json.load(f)
+            model = data.get("model")
+            if model:
+                return model
+
+    model = questionary.select(
+        "Select a model: ",
+        choices = [
+            "llama-3.3-70b",
+            "qwen/qwen3.6-27b", 
+            "gemma2-9b"
+        ]
+    ).ask()
+
+    existing = {}
+    if config_file.exists():
+        with open(config_file,"r") as f:
+            existing = json.load(f)
+
+    existing["model"] = model
+
+    with open(config_file,"w") as f:
+        json.dump(existing,f)
+
+
+    if model:
+        console.print(f"[bold green]✓ Model Selected: {model} [/]")
+        config_dir.mkdir(exist_ok=True)
+        with open(config_file,"w") as f:
+            json.dump({"model":model}, f)
+        return model
+    else:
+        console.print("[bold red]✗ Please Select in Given models.[/]")
+
+
+        

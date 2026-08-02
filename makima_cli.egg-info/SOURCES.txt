@@ -1,3 +1,4 @@
+LICENSE
 README.md
 pyproject.toml
 makima/__init__.py
@@ -6,6 +7,7 @@ makima/main.py
 makima/setup.py
 makima/core/__init__.py
 makima/core/agent.py
+makima/core/config_manager.py
 makima/core/context.py
 makima/core/memory.py
 makima/providers/base.py

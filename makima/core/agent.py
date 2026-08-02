@@ -6,7 +6,7 @@ from makima.tools import TOOL_REGISTRY
 from makima.tools.registry import TOOL_SCHEMAS
 from makima.providers.groq_provider import GroqProvider
 from rich.console import Console
-
+from makima.core.config_manager import handle_config
 
 console = Console()
 
@@ -53,81 +53,105 @@ def run_agent():
     console.print(Rule(style="#FF6B35"))  # clean horizontal line separator
     console.print()
 
-    while True:
-        user_input = console.input("[bold blue]You:[/] ")
-        if user_input.strip() == "exit":
-            break
-
-        memory.add_user(user_input)
+    try:
 
         while True:
-            try:
-                with console.status("[yellow]thinking...[/]"):
-                    stream = provider.stream_chat(
-                        messages=memory.get(),
-                        tools=TOOL_SCHEMAS
-                    )
-                    chunks = list(stream)
-            except Exception as e:
-                console.print(f"[red]Error: {e}[/]")
+            user_input = console.input("[bold blue]You:[/] ")
+            if user_input.strip() == "exit":
                 break
 
-            #variables to collect the response
-            text_buffer = ""
-            tool_name = ""
-            tool_args = ""
-            tool_call_id = ""
-            is_tool_call = False
+            if user_input.strip() == "/config":
+                handle_config()
+                continue
 
-            # console.print("[bold green]Agent:[/] ", end="")
+            memory.add_user(user_input)
 
-            
-            for chunk in chunks:
-                delta = chunk.choices[0].delta
+            while True:
+                try:
+                    with console.status("[yellow]thinking...[/]"):
+                        stream = provider.stream_chat(
+                            messages=memory.get(),
+                            tools=TOOL_SCHEMAS
+                        )
+                        chunks = list(stream)
+                except Exception as e:
+                    console.print(f"[red]Error: {e}[/]")
+                    break
 
-                #text chunk
-                if delta.content:
-                    # print(delta.content, end="", flush=True)
-                    text_buffer += delta.content
+                #variables to collect the response
+                text_buffer = ""
+                tool_name = ""
+                tool_args = ""
+                tool_call_id = ""
+                is_tool_call = False
+
+                # console.print("[bold green]Agent:[/] ", end="")
+
+                
+                for chunk in chunks:
+                    delta = chunk.choices[0].delta
+
+                    #text chunk
+                    if delta.content:
+                        # print(delta.content, end="", flush=True)
+                        text_buffer += delta.content
 
 
-                # tool call chunk
-                if delta.tool_calls:
-                    is_tool_call = True
-                    tc = delta.tool_calls[0]
-                    if tc.id:
-                        tool_call_id = tc.id
-                    if tc.function.name:
-                        tool_name += tc.function.name
-                    if tc.function.arguments:
-                        tool_args += tc.function.arguments
+                    # tool call chunk
+                    if delta.tool_calls:
+                        is_tool_call = True
+                        tc = delta.tool_calls[0]
+                        if tc.id:
+                            tool_call_id = tc.id
+                        if tc.function.name:
+                            tool_name += tc.function.name
+                        if tc.function.arguments:
+                            tool_args += tc.function.arguments
 
-            # print()
+                # print()
 
-            if is_tool_call:
-                console.print(f"[dim]⚡ {tool_name}[/]")
-
-                with console.status(f"[yellow]calling {tool_name}...[/]"):
+                if is_tool_call:
+                    console.print(f"[dim]⚡ {tool_name}[/]")
                     args = json.loads(tool_args)
+
+                    # confirmation for run_command only
+                    if tool_name == "run_command":
+                        console.print(f"[yellow]Command: {args.get('cmd')}[/]")
+                        confirm = console.input("[bold]Run this? (y/n):[/] ").strip().lower()
+                        if confirm != "y":
+                            memory.add_raw({
+                                "role": "assistant",
+                                "tool_calls": [{
+                                    "id": tool_call_id,
+                                    "type": "function",
+                                    "function": {
+                                        "name": tool_name,
+                                        "arguments": tool_args
+                                    }
+                                }]
+                            })
+                            memory.add_tool_result(tool_call_id, "Command cancelled by user")
+                            continue
+
                     tool_fn = TOOL_REGISTRY.get(tool_name)
-                    result = tool_fn(**args) if tool_fn else "Unknown tool"
-
-                # build the assistant message manually for memory
-                memory.add_raw({
-                    "role": "assistant",
-                    "tool_calls": [{
-                        "id": tool_call_id,
-                        "type": "function",
-                        "function": {
-                            "name": tool_name,
-                            "arguments": tool_args
-                        }
-                    }]
-                })
-                memory.add_tool_result(tool_call_id, str(result))
-
-            else:
-                console.print("[bold green]Agent:[/]")
-                console.print(Markdown(text_buffer))
-                memory.add_assistant(text_buffer)
-                break
+                    with console.status(f"[yellow]calling {tool_name}...[/]"):
+                        result = tool_fn(**args) if tool_fn else "Unknown tool"
+                    memory.add_raw({
+                        "role": "assistant",
+                        "tool_calls": [{
+                            "id": tool_call_id,
+                            "type": "function",
+                            "function": {
+                                "name": tool_name,
+                                "arguments": tool_args
+                            }
+                        }]
+                    })
+                    memory.add_tool_result(tool_call_id, str(result))
+                else:
+                    console.print("[bold green]Agent:[/]")
+                    console.print(Markdown(text_buffer))
+                    memory.add_assistant(text_buffer)
+                    break
+    except KeyboardInterrupt:
+        console.print("\n[dim]Goodbye![/]")
