@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: makima-cli
-Version: 0.2.0
+Version: 0.2.1
 Summary: AI coding assistant for your terminal
 Author: Kanhaiya
 License: MIT License
@@ -33,6 +33,7 @@ Requires-Dist: python-dotenv
 Requires-Dist: gitpython
 Requires-Dist: rich
 Requires-Dist: pyfiglet
+Requires-Dist: questionary
 Dynamic: license-file
 
 # Makima CLI 🤖

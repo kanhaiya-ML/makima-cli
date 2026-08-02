@@ -3,3 +3,4 @@ python-dotenv
 gitpython
 rich
 pyfiglet
+questionary

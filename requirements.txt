@@ -2,3 +2,4 @@ groq
 python-dotenv
 gitpython
 rich
+questionary
