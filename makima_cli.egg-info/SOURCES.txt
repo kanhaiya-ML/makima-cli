@@ -5,6 +5,7 @@ makima/__init__.py
 makima/config.py
 makima/main.py
 makima/setup.py
+makima/test.py
 makima/core/__init__.py
 makima/core/agent.py
 makima/core/config_manager.py
@@ -16,6 +17,8 @@ makima/tools/__init__.py
 makima/tools/file_tools.py
 makima/tools/registry.py
 makima/tools/shell_tools.py
+makima/ui/__init__.py
+makima/ui/app.py
 makima_cli.egg-info/PKG-INFO
 makima_cli.egg-info/SOURCES.txt
 makima_cli.egg-info/dependency_links.txt

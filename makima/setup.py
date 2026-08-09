@@ -28,7 +28,7 @@ def setup_api_key():
         with open(config_file, "r") as f:
             data = json.load(f)
             key = data.get("groq_api_key")
-            if key:
+            if key and validate_key(key):
                 return key
 
     import os
@@ -83,6 +83,7 @@ def setup_model():
 
     existing["model"] = model
 
+    config_dir.mkdir(exist_ok=True)
     with open(config_file,"w") as f:
         json.dump(existing,f)
 

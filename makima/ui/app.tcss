@@ -1,0 +1,14 @@
+RichLog {
+    height: 1fr;
+    border: solid #FF6B35;
+    padding: 1;
+}
+
+Input {
+    dock: bottom;
+    border: solid #FF6B35;
+}
+
+Header {
+    background: #FF6B35;
+}

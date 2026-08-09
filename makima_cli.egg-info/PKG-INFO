@@ -52,7 +52,7 @@ An AI-powered coding assistant that runs in your terminal. Point it at any codeb
 
 ## Install
 
-git clone https://github.com/yourusername/makima-cli.git
+git clone https://github.com/kanhaiya-ML/makima-cli.git
 cd makima-cli
 pip install -r requirements.txt
 
