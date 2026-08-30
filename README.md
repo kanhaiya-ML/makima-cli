@@ -1,8 +1,17 @@
 # Makima CLI 🤖
 
-An AI-powered coding assistant that runs in your terminal. Point it at any codebase and ask questions, make edits, and run commands — all from a clean CLI interface.
+
+
+![PyPI version](https://img.shields.io/pypi/v/makima-cli)
+![Python](https://img.shields.io/pypi/pyversions/makima-cli)
+![License](https://img.shields.io/github/license/kanhaiya-ML/makima-cli)
+![Downloads](https://img.shields.io/pypi/dm/makima-cli)
+![GitHub stars](https://img.shields.io/github/stars/kanhaiya-ML/makima-cli)
 
 ![Makima CLI Demo](render1788090417979.gif)
+
+An AI-powered coding assistant that runs in your terminal. Point it at any codebase and ask questions, make edits, and run commands — all from a clean CLI interface.
+
 
 ## Features
 
