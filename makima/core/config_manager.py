@@ -123,3 +123,53 @@ def handle_config():
         change_model()
     elif choice == "Change API key":
         change_api_key()
+
+
+from makima.tools.git_tools import get_git_diff, generate_commit_message, commit_and_push
+import subprocess
+import os
+
+def commit_only(message):
+    cmd = f'git add -A && git commit -m "{message}"'
+    result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
+    if result.returncode == 0:
+        return "✓ Committed locally"
+    return f"✗ Failed: {result.stderr}"
+
+
+def analyze_changes():
+    diff = get_git_diff()
+
+    if not diff.strip():
+        return None, None
+    message = generate_commit_message(diff)
+    return  diff, message
+
+
+def handle_commit():
+    diff = get_git_diff()
+
+    if not diff.strip():
+        console.print("[yellow]No changes to commit.[/]")
+        return
+    
+    commit_message = generate_commit_message(diff=diff)
+    console.print(f"[white] {commit_message}")
+
+    # choice = questionary.select(
+    #     "What action you want?: ",
+    #     choices = [
+    #         "commit_and_push",
+    #         "commit only",
+    #         "cancle"
+    #     ]
+    # ).ask()
+
+    # if choice == "commit_and_push":
+    #     result = commit_and_push(message=commit_message)
+    #     console.print(f"[green]{result}[/]")
+    # elif choice == "commit only":
+    #     result = commit_only(diff)
+    #     console.print(f"[green]{result}[/]")
+
+        

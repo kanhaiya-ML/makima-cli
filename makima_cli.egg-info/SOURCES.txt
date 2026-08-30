@@ -15,6 +15,7 @@ makima/providers/base.py
 makima/providers/groq_provider.py
 makima/tools/__init__.py
 makima/tools/file_tools.py
+makima/tools/git_tools.py
 makima/tools/registry.py
 makima/tools/shell_tools.py
 makima/ui/__init__.py

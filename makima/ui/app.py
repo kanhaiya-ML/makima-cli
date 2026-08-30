@@ -3,13 +3,16 @@ from textual.widgets import Header, Footer, Input, RichLog
 from makima.config import PROJECT_ROOT
 from makima.tools import TOOL_REGISTRY
 from makima.tools.registry import TOOL_SCHEMAS
-from makima.core.config_manager import handle_config
+from makima.core.config_manager import handle_config, analyze_changes, commit_only
+from makima.tools.git_tools import commit_and_push
 
 import asyncio
 import json
 
 from makima.providers.groq_provider import GroqProvider
 from makima.core.memory import Memory
+
+from pathlib import Path
 
 
 SYSTEM_PROMPT = f"""
@@ -30,12 +33,14 @@ Rules:
 
 
 class MakimaApp(App):
-    CSS_PATH = "app.tcss"
+    CSS_PATH = Path(__file__).parent / "app.tcss"
     
     def __init__(self):
         super().__init__()
         self.memory = Memory(system_prompt=SYSTEM_PROMPT)
         self.provider = GroqProvider()
+        self.pending_commit = None
+
     
     def compose(self) -> ComposeResult:
         yield Header()
@@ -69,6 +74,37 @@ class MakimaApp(App):
             await asyncio.to_thread(handle_config)
             return
 
+        if user_input == "/commit":
+            chat.write("[dim]Analyzing changes...[/]")
+            diff, message = await asyncio.to_thread(analyze_changes)
+
+            if not diff:
+                chat.write("[yellow]No changes to commit.[/]")
+                return
+
+            chat.write(f"[white]Generated message: {message}[/]")
+            chat.write("[yellow]Type 'push' to commit and push, 'commit' to commit only, or 'cancel'[/]")
+
+            self.pending_commit = {"diff": diff, "message": message}
+            return
+
+        if user_input == "push" and self.pending_commit:
+            result = await asyncio.to_thread(commit_and_push, self.pending_commit["message"])
+            chat.write(f"[green]{result}[/]")
+            self.pending_commit = None
+            return
+
+        if user_input == "commit" and self.pending_commit:
+            result = await asyncio.to_thread(commit_only, self.pending_commit["message"])
+            chat.write(f"[green]{result}[/]")
+            self.pending_commit = None
+            return
+
+        if user_input == "cancel" and self.pending_commit:
+            chat.write("[yellow]Commit cancelled.[/]")
+            self.pending_commit = None
+            return
+        
         
         # show thinking indicator
         chat.write("[dim]thinking...[/]")
