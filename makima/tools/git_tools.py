@@ -12,14 +12,14 @@ def get_git_diff():
 
 
 def generate_commit_message(diff):
-    prompt = f"""
-    You are a git commit message generator.
-    Look at this git diff and generate ONE concise commit message.
-    Follow conventional commits format: feat/fix/refactor/docs/chore
-    Return ONLY the commit message, nothing else.
+    prompt = f"""Generate ONE git commit message for this diff.
+    Format: type(scope): description
+    Types: feat/fix/refactor/docs/chore
+    Rules: max 72 chars, no quotes, no backticks, no explanation
+    Return ONLY the commit message line, nothing else.
 
-    {diff}
-    """
+    {diff[:3000]}"""
+    
     try:
         client = Groq(api_key=GROQ_API_KEY)
         result = client.chat.completions.create(

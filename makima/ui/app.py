@@ -5,7 +5,7 @@ from makima.tools import TOOL_REGISTRY
 from makima.tools.registry import TOOL_SCHEMAS
 from makima.core.config_manager import handle_config, analyze_changes, commit_only
 from makima.tools.git_tools import commit_and_push
-
+from rich.text import Text
 import asyncio
 import json
 
@@ -62,7 +62,7 @@ class MakimaApp(App):
         chat = self.query_one(RichLog)
         input_box = self.query_one(Input)
 
-        chat.write(f"[bold blue]You:[/] {user_input}")
+        chat.write(Text.from_markup(f"[bold blue]You:[/] {user_input}"))
         input_box.clear()
 
         if user_input == "exit":
@@ -82,15 +82,15 @@ class MakimaApp(App):
                 chat.write("[yellow]No changes to commit.[/]")
                 return
 
-            chat.write(f"[white]Generated message: {message}[/]")
-            chat.write("[yellow]Type 'push' to commit and push, 'commit' to commit only, or 'cancel'[/]")
+            chat.write(Text.from_markup(f"[white]Generated message: {message}[/]"))
+            chat.write(Text.from_markup(f"[yellow]Type 'push' to commit and push, 'commit' to commit only, or 'cancel'[/]"))
 
             self.pending_commit = {"diff": diff, "message": message}
             return
 
         if user_input == "push" and self.pending_commit:
             result = await asyncio.to_thread(commit_and_push, self.pending_commit["message"])
-            chat.write(f"[green]{result}[/]")
+            chat.write(Text.from_markup(f"[green]{result}[/]"))
             self.pending_commit = None
             return
 
@@ -107,14 +107,14 @@ class MakimaApp(App):
         
         
         # show thinking indicator
-        chat.write("[dim]thinking...[/]")
+        chat.write(Text.from_markup("[dim]thinking...[/]"))
         
         # run agent in background thread
         response = await asyncio.to_thread(self.process_message, user_input)
         
         # remove "thinking..." and show response
         from rich.markdown import Markdown
-        chat.write(Markdown(f"[bold green]Agent:[/] {response}"))
+        chat.write(Text.from_markup(f"[bold green]Agent:[/] {response}"))
 
 
     def process_message(self, user_input):

@@ -125,11 +125,12 @@ def handle_config():
         change_api_key()
 
 
-from makima.tools.git_tools import get_git_diff, generate_commit_message, commit_and_push
+from makima.tools.git_tools import get_git_diff, generate_commit_message, clean_message
 import subprocess
 import os
 
 def commit_only(message):
+    message = clean_message(message)
     cmd = f'git add -A && git commit -m "{message}"'
     result = subprocess.run(cmd, shell=True, text=True, capture_output=True)
     if result.returncode == 0:
