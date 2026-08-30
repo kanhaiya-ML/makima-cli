@@ -12,6 +12,13 @@ def get_git_diff():
 
 
 def generate_commit_message(diff):
+
+    # prompt = f"""Generate ONE git commit message for this diff.
+    #     Format: type(scope): description
+    #     Types: feat/fix/refactor/docs/chore
+    #     Rules: max 72 chars, no quotes, no backticks, no explanation
+    #     Return ONLY the commit message line, nothing else.
+
     prompt = f"""Generate ONE git commit message for this diff.
     Format: type(scope): description
     Types: feat/fix/refactor/docs/chore
