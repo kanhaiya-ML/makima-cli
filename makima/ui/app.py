@@ -114,7 +114,8 @@ class MakimaApp(App):
         
         # remove "thinking..." and show response
         from rich.markdown import Markdown
-        chat.write(Text.from_markup(f"[bold green]Agent:[/] {response}"))
+        chat.write(Text.from_markup(f"[bold green]Agent:[/]"))
+        chat.write(Markdown(response))
 
 
     def process_message(self, user_input):
