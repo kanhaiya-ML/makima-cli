@@ -2,6 +2,8 @@
 
 An AI-powered coding assistant that runs in your terminal. Point it at any codebase and ask questions, make edits, and run commands — all from a clean CLI interface.
 
+![Makima CLI Demo](render1788090417979.gif)
+
 ## Features
 
 - Understands your entire codebase
